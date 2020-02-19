@@ -3,14 +3,22 @@
 #DISPLAYING WELCOME MESSAGE
 echo "Welcome To Gambling Simulator"
 
+#DECLARING DICTIONARY
+declare -A totalMoneyperday
+
 #CONSTANTS
 BET=1;
 WIN=1;
 WINNING_CONDITION=150;
 LOSSING_CONDITION=50;
+TOTAL_DAYS=20;
+LIMIT=0;
 
 #VARIABLE
 stake=100;
+totalStake=0;
+resultPerDay=0;
+day=0;
 
 #FUNCTION TO CHECK CONDITION AND PLAY
 function gamble() {
@@ -23,7 +31,28 @@ function gamble() {
 			stake=$(($stake-$BET))
 		fi
 	done
+	echo $stake
+	stake=100;
 }
 
-#CALLING FUNCTION
-gamble
+#CALLING FUNCTION FOR TOTAL NUMBER OF DAYS
+for (( day=1; day<=$TOTAL_DAYS; day++ ))
+do
+	resultPerDay=$(gamble)
+	if [[ $resultPerDay -gt $stake ]]
+	then
+		resultPerDay=$(($resultPerDay-$stake))
+	else
+		resultPerDay=$(($resultPerDay-$stake))
+	fi
+	totalMoneyperday[day $day]=$resultPerDay
+	totalStake=$(($totalStake+$resultPerDay))
+done
+
+#DISPLAYING TOTAL AMOUNT WON OR LOST
+if [[ $totalStake -gt $LIMIT ]]
+then
+	echo "Total Amount Won After 20 Days = $totalStake"
+else
+	echo "Total Amount Lost After 20 Days= $totalStake"
+fi
