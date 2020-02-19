@@ -11,7 +11,7 @@ BET=1;
 WIN=1;
 WINNING_CONDITION=150;
 LOSSING_CONDITION=50;
-TOTAL_DAYS=20;
+TOTAL_DAYS=30;
 LIMIT=0;
 
 #VARIABLES
@@ -19,6 +19,9 @@ stake=100;
 totalStake=0;
 resultPerDay=0;
 day=0;
+month=0;
+winDay=0;
+lossDay=0;
 
 #FUNCTION TO CHECK CONDITION AND PLAY
 function gamble() {
@@ -35,24 +38,33 @@ function gamble() {
 	stake=100;
 }
 
-#CALLING FUNCTION FOR TOTAL NUMBER OF DAYS
-for (( day=1; day<=$TOTAL_DAYS; day++ ))
+#CALLING FUNCTION FOR TOTAL NUMBER OF DAYS IN MONTH AND FOR EACH MONTH
+for (( month=1; $month<=12; month++ ))
 do
-	resultPerDay=$(gamble)
-	if [[ $resultPerDay -gt $stake ]]
-	then
-		resultPerDay=$(($resultPerDay-$stake))
-	else
-		resultPerDay=$(($resultPerDay-$stake))
-	fi
-	totalMoneyPerDay[day $day]=$resultPerDay
-	totalStake=$(($totalStake+$resultPerDay))
-done
-
+	for (( day=1; day<=$TOTAL_DAYS; day++ ))
+	do
+		resultPerDay=$(gamble)
+		if [[ $resultPerDay -gt $stake ]]
+		then
+			((winDay++))
+			resultPerDay=$(($resultPerDay-$stake))
+		else
+			((lossDay++))
+			resultPerDay=$(($resultPerDay-$stake))
+		fi
+		totalMoneyPerDay[day $day]=$resultPerDay
+		totalStake=$(($totalStake+$resultPerDay))
+	done
 #DISPLAYING TOTAL AMOUNT WON OR LOST
-if [[ $totalStake -gt $LIMIT ]]
-then
-	echo "Total Amount Won After 20 Days = $totalStake"
-else
-	echo "Total Amount Lost After 20 Days= $totalStake"
-fi
+	if [[ $totalStake -gt $LIMIT ]]
+	then
+		echo "Total Amount Won After 30 Days in Month $month = $totalStake"
+	else
+		echo "Total Amount Lost After 30 Days in Month $month= $totalStake"
+	fi
+		echo " Total Win Days In Month $month = $winDay $(($winDay*50))"
+		echo " Total Loss Days In Month $month = $lossDay $(($lossDay*50))"
+		winDay=0;
+		lossDay=0;
+		totalStake=0;
+done
