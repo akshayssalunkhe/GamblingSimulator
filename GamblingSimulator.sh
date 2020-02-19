@@ -4,7 +4,7 @@
 echo "Welcome To Gambling Simulator"
 
 #DECLARING DICTIONARY
-declare -A totalMoneyperday
+declare -A totalMoneyPerDay
 
 #CONSTANTS
 BET=1;
@@ -14,7 +14,7 @@ LOSSING_CONDITION=50;
 TOTAL_DAYS=20;
 LIMIT=0;
 
-#VARIABLE
+#VARIABLES
 stake=100;
 totalStake=0;
 resultPerDay=0;
@@ -45,7 +45,7 @@ do
 	else
 		resultPerDay=$(($resultPerDay-$stake))
 	fi
-	totalMoneyperday[day $day]=$resultPerDay
+	totalMoneyPerDay[day $day]=$resultPerDay
 	totalStake=$(($totalStake+$resultPerDay))
 done
 
