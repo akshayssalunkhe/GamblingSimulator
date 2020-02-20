@@ -56,8 +56,8 @@ do
 			resultPerDay=$(($resultPerDay-$stake))
 			lossPerDay=$(($lossPerDay+$resultPerDay))
 		fi
-		totalMoneyPerDay[day $day]=$resultPerDay
 		totalStake=$(($totalStake+$resultPerDay))
+		totalMoneyPerDay[day$day]=$totalStake
 	done
 #DISPLAYING TOTAL AMOUNT WON OR LOST
 	if [[ $totalStake -gt $LIMIT ]]
@@ -66,14 +66,27 @@ do
 	else
 		echo "Total Amount Lost After 30 Days in Month $month= $totalStake"
 	fi
-		echo " Total Win Days In Month $month = $winDay "
-		echo " Total Amount Won In $winDay Days = $winPerDay"
-		echo " Total Loss Days In Month $month = $lossDay "
-		echo " Total Amount Lost In $lossDay Days = $lossPerDay"
+	echo " Total Win Days In Month $month = $winDay "
+	echo " Total Amount Won In $winDay Days = $winPerDay"
+	echo " Total Loss Days In Month $month = $lossDay "
+	echo " Total Amount Lost In $lossDay Days = $lossPerDay"
 #REINITIALIZING VARIABLES FOR NEXT MONTH
-		winDay=0;
-		lossDay=0;
-		totalStake=0;
-		winPerDay=0;
-		lossPerDay=0;
+	winDay=0;
+	lossDay=0;
+	totalStake=0;
+	winPerDay=0;
+	lossPerDay=0;
+#SORTING DICTIONARY TO FIND LUCKIEST
+	echo " Luckiest Day In Month $month And Total Stake He Had = "
+	for i in ${!totalMoneyPerDay[@]}
+	do
+		echo " $i ${totalMoneyPerDay[$i]}"
+	done | sort -k2 -rn | head -1
+#SORTING DICTIONARY TO FIND UNLUCKIEST DAY
+	echo " UnLuckiest Day In Month $month And Total Stake He Had = "
+	for i in ${!totalMoneyPerDay[@]}
+	do
+		echo " $i ${totalMoneyPerDay[$i]}"
+	done | sort -k2 -rn | tail -1
+	echo "--------------------MONTHEND------------------------"
 done
