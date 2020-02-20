@@ -1,5 +1,6 @@
 #!/bin/bash -x
 
+
 #DISPLAYING WELCOME MESSAGE
 echo "Welcome To Gambling Simulator"
 
@@ -15,15 +16,14 @@ TOTAL_DAYS=30;
 LIMIT=0;
 
 #VARIABLES
-stake=100;
-totalStake=0;
-resultPerDay=0;
 day=0;
-month=0;
+stake=100;
 winDay=0;
 lossDay=0;
 winPerDay=0;
 lossPerDay=0;
+totalStake=0;
+resultPerDay=0;
 
 #FUNCTION TO CHECK CONDITION AND PLAY
 function gamble() {
@@ -40,8 +40,26 @@ function gamble() {
 	stake=100;
 }
 
-#CALLING FUNCTION FOR TOTAL NUMBER OF DAYS IN MONTH AND FOR EACH MONTH
-for (( month=1; $month<=12; month++ ))
+#FUNCTION TO GET LUCKY DAY
+function getLuckyDay() {
+	echo " Luckiest Day In Month And Total Stake Player Had = "
+	for i in ${!totalMoneyPerDay[@]}
+	do
+		echo " $i ${totalMoneyPerDay[$i]}"
+	done | sort -k2 -rn | head -1
+}
+
+#FUNCTION TO GET UNLUCKY DAY
+function getUnluckDay() {
+	echo " Unluckiest Day In Month And Total Stake Player Had = "
+	for i in ${!totalMoneyPerDay[@]}
+	do
+		echo " $i ${totalMoneyPerDay[$i]}"
+	done | sort -k2 -rn | tail -1
+}
+
+#CALLING FUNCTION FOR TOTAL NUMBER OF DAYS IN MONTH
+while [[ $stake -ge $LIMIT && $totalStake -ge $LIMIT ]]
 do
 	for (( day=1; day<=$TOTAL_DAYS; day++ ))
 	do
@@ -60,33 +78,25 @@ do
 		totalMoneyPerDay[day$day]=$totalStake
 	done
 #DISPLAYING TOTAL AMOUNT WON OR LOST
-	if [[ $totalStake -gt $LIMIT ]]
+	if [[ $totalStake -ge $LIMIT ]]
 	then
-		echo "Total Amount Won After 30 Days in Month $month = $totalStake"
+		echo "Total Amount Won After 30 Days in A Month = $totalStake "
 	else
-		echo "Total Amount Lost After 30 Days in Month $month= $totalStake"
+		echo "Total Amount Lost After 30 Days in A Month= $totalStake "
 	fi
-	echo " Total Win Days In Month $month = $winDay "
-	echo " Total Amount Won In $winDay Days = $winPerDay"
-	echo " Total Loss Days In Month $month = $lossDay "
-	echo " Total Amount Lost In $lossDay Days = $lossPerDay"
+#DISPLAYING NUMBER OF DAYS WON AND LOST IN A MONTH
+	echo " Total Days In A Month Player Won = $winDay "
+	echo " Total Amount Won after $winDay Days = $winPerDay "
+	echo " Total Days In A Month Player Lost = $lossDay "
+	echo " Total Amount Lost after $lossDay Days = $lossPerDay "
 #REINITIALIZING VARIABLES FOR NEXT MONTH
 	winDay=0;
 	lossDay=0;
-	totalStake=0;
 	winPerDay=0;
 	lossPerDay=0;
-#SORTING DICTIONARY TO FIND LUCKIEST
-	echo " Luckiest Day In Month $month And Total Stake He Had = "
-	for i in ${!totalMoneyPerDay[@]}
-	do
-		echo " $i ${totalMoneyPerDay[$i]}"
-	done | sort -k2 -rn | head -1
-#SORTING DICTIONARY TO FIND UNLUCKIEST DAY
-	echo " UnLuckiest Day In Month $month And Total Stake He Had = "
-	for i in ${!totalMoneyPerDay[@]}
-	do
-		echo " $i ${totalMoneyPerDay[$i]}"
-	done | sort -k2 -rn | tail -1
-	echo "--------------------MONTHEND------------------------"
+#CALLING FUNCTION TO GET LUCKY DAY
+	getLuckyDay
+#CALLING FUNCTION TO GET UNLUCK DAY
+	getUnluckDay
+	echo "----------------------- MONTH END ---------------------"
 done
